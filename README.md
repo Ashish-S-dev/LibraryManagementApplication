@@ -75,7 +75,8 @@ Other Libraries: JDateChooser, r2xml for Manging table Data, MySQL Connector
     Username   = Ashish Soni
     Password   = Librarian@21
 
-Note. This Application Sometime May Generate Delay, This is Due to Free Remote Database (MySQL). This Will Defenitely Resolve in Further Update.
+<p><b>Note.</b> This Application Sometime May Generate Delay, This is Due to Free Remote Database (MySQL). This Will Defenitely Resolve in Further Update.</p>
+
 ---
 
 <h2>🖼ScreenShots</h2>
