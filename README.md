@@ -144,7 +144,7 @@ git clone [https://github.com/yourusername/library-management-system.git](https:
 ---
 
 
-🙋‍♂ Author
+<h2>🙋‍♂ Author</h2>
 
 Ashish Soni
 🔗 [LinkedIn](https://www.linkedin.com/in/ashish-soni-594317281?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app)
