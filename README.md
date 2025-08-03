@@ -24,7 +24,7 @@ A desktop-based application built using Java Swing (GUI) and MySQL to manage the
 
 ✔ Login and authentication system
 
-✔ Mark/Unmark Attendence
+✔ Mark/Unmark Attandence
 
 ✔ Database Connectivity with MySQL for smooth data handling
 
