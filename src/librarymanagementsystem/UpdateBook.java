@@ -9,7 +9,7 @@ import java.sql.*;
 import java.awt.event.*;
 public class UpdateBook extends JFrame implements ActionListener{
     
-    JTextField tfbookname,tfauthorname,tfpublisher,tfedition,tfisbn,tfcategory,tflanguage,tfbranch,tfpubdate,tfcurrdate;
+    JTextField tfbookname,tfauthorname,tfdrivelink,tfpublisher,tfedition,tfisbn,tfcategory,tflanguage,tfbranch,tfpubdate,tfcurrdate;
     Choice jcrefno;
   
     JButton jbcancel,jbsubmit,fetchDetails;
@@ -186,30 +186,44 @@ public class UpdateBook extends JFrame implements ActionListener{
         tfcategory.setBounds(300,465,250,20);
         add(tfcategory);
         
-        JLabel lblbranch=new JLabel("Branch");
-        lblbranch.setFont(new Font("Tahoma",Font.BOLD,18));
-        lblbranch.setForeground(Color.getHSBColor(0, 0, 0.2f));
-        lblbranch.setBounds(40,515,90,20);
-        add(lblbranch);
+        JLabel lbldrivelink=new JLabel("Book Drive Link");
+        lbldrivelink.setFont(new Font("Tahoma",Font.BOLD,18));
+        lbldrivelink.setForeground(Color.getHSBColor(0, 0, 0.2f));
+        lbldrivelink.setBounds(40,515,200,20);
+        add(lbldrivelink);
         
         
-        tfbranch=new JTextField();
-        tfbranch.setBackground(Color.white);
-        tfbranch.setFont(new Font("sarif",Font.PLAIN,14));
-        tfbranch.setForeground(Color.BLACK);
-        tfbranch.setBounds(170,515,100,20);
-        add(tfbranch);
+        tfdrivelink=new JTextField();
+        tfdrivelink.setBackground(Color.white);
+        tfdrivelink.setFont(new Font("sarif",Font.PLAIN,14));
+        tfdrivelink.setForeground(Color.BLACK);
+        tfdrivelink.setBounds(300,515,250,20);
+        add(tfdrivelink);
         
-        JLabel lbldate=new JLabel("Date");
-        lbldate.setFont(new Font("Tahoma",Font.BOLD,18));
-        lbldate.setForeground(Color.getHSBColor(0, 0, 0.2f));
-        lbldate.setBounds(300,515,90,20);
-        add(lbldate);
-       
-        tfcurrdate=new JTextField();
-        tfcurrdate.setBounds(450,515,100,20);
-        tfcurrdate.setFont(new Font("Tahoma",Font.PLAIN,14));
-        add(tfcurrdate);
+//        JLabel lblbranch=new JLabel("Branch");
+//        lblbranch.setFont(new Font("Tahoma",Font.BOLD,18));
+//        lblbranch.setForeground(Color.getHSBColor(0, 0, 0.2f));
+//        lblbranch.setBounds(40,515,90,20);
+//        add(lblbranch);
+//        
+//        
+//        tfbranch=new JTextField();
+//        tfbranch.setBackground(Color.white);
+//        tfbranch.setFont(new Font("sarif",Font.PLAIN,14));
+//        tfbranch.setForeground(Color.BLACK);
+//        tfbranch.setBounds(170,515,100,20);
+//        add(tfbranch);
+//        
+//        JLabel lbldate=new JLabel("Date");
+//        lbldate.setFont(new Font("Tahoma",Font.BOLD,18));
+//        lbldate.setForeground(Color.getHSBColor(0, 0, 0.2f));
+//        lbldate.setBounds(300,515,90,20);
+//        add(lbldate);
+//       
+//        tfcurrdate=new JTextField();
+//        tfcurrdate.setBounds(450,515,100,20);
+//        tfcurrdate.setFont(new Font("Tahoma",Font.PLAIN,14));
+//        add(tfcurrdate);
       
         
         jbcancel=new JButton("Cancel");
@@ -237,6 +251,7 @@ public class UpdateBook extends JFrame implements ActionListener{
 
 
         if(ae.getSource()==jbsubmit){
+            String drivelink=tfdrivelink.getText();
             String name=tfbookname.getText();
             String authorname=tfauthorname.getText();
             String publisher=tfpublisher.getText();
@@ -244,15 +259,16 @@ public class UpdateBook extends JFrame implements ActionListener{
             String isbn=tfisbn.getText();
             String category=tfcategory.getText();
             String language=tflanguage.getText();
-            String branch=tfbranch.getText();
-            String currdate=tfcurrdate.getText();
+//            String branch=tfbranch.getText();
+//            String currdate=tfcurrdate.getText();
             String pubdate=tfpubdate.getText();
-            if(!name.equals("")){
+            if(!name.equals("") && !drivelink.equals("") && !authorname.equals("") && !publisher.equals("") && !edition.equals("") && !isbn.equals("") && !category.equals("") && !category.equals("")){
                 Conn conn=null;
                 try{
                     conn=new Conn();
-                    String query="Update bookdetails set Name='"+name+"',Author='"+authorname+"',Publisher='"+publisher+"',Edition='"+edition+"',ISBN='"+isbn+"',Category='"+category+"',language='"+language+"',Branch='"+branch+"',PublicationDate='"+currdate+"',Add_on='"+pubdate+"' where Reference_No='"+jcrefno.getSelectedItem()+"'";
+                    String query="Update bookdetails set Name='"+name+"',Author='"+authorname+"',Publisher='"+publisher+"',Edition='"+edition+"',ISBN='"+isbn+"',Category='"+category+"',language='"+language+"',Add_on='"+pubdate+"' where Reference_No='"+jcrefno.getSelectedItem()+"'";
                     conn.s.executeUpdate(query);
+                    conn.s.executeUpdate("Update BookPdf set pdflink='"+drivelink+"'where Reference_No='"+jcrefno.getSelectedItem()+"' ");
                     JOptionPane.showMessageDialog(null,"Book Details Updated Successfully","",JOptionPane.INFORMATION_MESSAGE);
                     setVisible(false);
                 }catch(Exception e){
@@ -289,17 +305,22 @@ public class UpdateBook extends JFrame implements ActionListener{
                     tflanguage.setText(rs.getString("language"));
                     tfisbn.setText(rs.getString("ISBN"));
                     tfpubdate.setText(rs.getString("PublicationDate"));
-                    tfcurrdate.setText(rs.getString("Add_on"));
+                    //tfcurrdate.setText(rs.getString("Add_on"));
                     tfcategory.setText(rs.getString("Category"));
-                    tfbranch.setText(rs.getString("Branch"));
+                    //tfbranch.setText(rs.getString("Branch"));
+                    
                  }else{
-                    JOptionPane.showMessageDialog(null,"No Book Found" );
+                    JOptionPane.showMessageDialog(null,"Book Details Not Found" );
+                    }
+                ResultSet rsdata=conn.s.executeQuery("Select * from BookPdf where Reference_no='"+msg+"'");
+                if(rsdata.next()){
+                        tfdrivelink.setText(rsdata.getString("pdflink"));
+                }else{
+                    JOptionPane.showMessageDialog(null,"Reading Material Not Found" );
                 }
             }catch(Exception e){
                 e.printStackTrace();
-            }
-            
-            finally{
+            }finally{
                     if(conn.c!=null){
                         try{
                             conn.c.close();
@@ -309,7 +330,7 @@ public class UpdateBook extends JFrame implements ActionListener{
                         }
                         
                     }
-                }
+            }
             
         }
     }

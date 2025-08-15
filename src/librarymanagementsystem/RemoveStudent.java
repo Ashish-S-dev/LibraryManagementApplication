@@ -223,7 +223,7 @@ public class RemoveStudent extends JFrame implements ActionListener{
                     tfgender.setText(rs.getString("Gender"));
                     jdcdob.setText(rs.getString("DOB"));
                     jcurrdate.setText(rs.getString("ModifyDate"));
-                    jcbdep.setText(rs.getString("Course"));
+                    jcbdep.setText(rs.getString("Department"));
                     jcbcourse.setText(rs.getString("Course"));
                     jcbyear.setText(rs.getString("Year"));
                     tfstuname.setText(rs.getString("Name"));

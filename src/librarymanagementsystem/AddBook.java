@@ -9,7 +9,7 @@ import com.toedter.calendar.JDateChooser;
 import java.awt.event.*;
 public class AddBook extends JFrame implements ActionListener{
     
-    JTextField tfbookname,tfauthorname,tfpublisher,tfedition,tfcopies,tfisbn;
+    JTextField tfbookname,tfauthorname,tfpublisher,tfedition,tflink,tfisbn;
     JComboBox tfcategory,tflanguage,tfbranch;
     JLabel lblrefno;
    
@@ -33,7 +33,7 @@ public class AddBook extends JFrame implements ActionListener{
         Image i2=i1.getImage().getScaledInstance(600, 400, Image.SCALE_DEFAULT);
         ImageIcon i3=new ImageIcon(i2);
         JLabel i4=new JLabel(i3);
-        i4.setBounds(550,90,600,400);
+        i4.setBounds(550,70,600,400);
         add(i4);
         
         JLabel lblref=new JLabel("Book Reference Number");
@@ -188,8 +188,19 @@ public class AddBook extends JFrame implements ActionListener{
         tfauthorname.setFont(new Font("Tahoma",Font.PLAIN,14));
         add(tfauthorname);
         
+        JLabel lbllink=new JLabel("Drive Link");
+        lbllink.setFont(new Font("Tahoma",Font.BOLD,18));
+        lbllink.setForeground(Color.getHSBColor(0, 0, 0.2f));
+        lbllink.setBounds(640,450,100,20);
+        add(lbllink);
+        
+        tflink = new JTextField();
+        tflink.setBounds(760,450,250,20);
+        tflink.setFont(new Font("Tahoma",Font.PLAIN,14));
+        add(tflink);
+        
         jbcancel=new JButton("Cancel");
-        jbcancel.setBounds(650,490,120,40);
+        jbcancel.setBounds(650,500,120,40);
         jbcancel.setForeground(Color.getHSBColor(0, 0, 0.2f));
         jbcancel.setFont(new Font("Tahoma",Font.BOLD,18));
         jbcancel.setBackground(Color.getHSBColor(0f, 0.80f, 0.85f));//Light red
@@ -197,7 +208,7 @@ public class AddBook extends JFrame implements ActionListener{
         add(jbcancel);
         
         jbsubmit=new JButton("Submit");
-        jbsubmit.setBounds(900,490,120,40);
+        jbsubmit.setBounds(900,500,120,40);
         jbsubmit.setFont(new Font("Tahoma",Font.BOLD,18));
         jbsubmit.setForeground(Color.getHSBColor(0, 0, 0.2f));//Green
         jbsubmit.setBackground(Color.getHSBColor(0.33f, 0.80f, 0.65f));
@@ -216,6 +227,7 @@ public class AddBook extends JFrame implements ActionListener{
             
 
         if(ae.getSource()==jbsubmit){
+            String drivelink=tflink.getText();
             String name=tfbookname.getText();
             String authorname=tfauthorname.getText();
             String publisher=tfpublisher.getText();
@@ -227,12 +239,13 @@ public class AddBook extends JFrame implements ActionListener{
             String refno=lblrefno.getText();
             String currdate=((JTextField)jyccurrdate.getDateEditor().getUiComponent()).getText();
             String pubdate=((JTextField)pubyear.getDateEditor().getUiComponent()).getText();
-            if(!language.equals("Select")  && !branch.equals("Select") && !refno.equals("") && !currdate.equals("") && !pubdate.equals("") && !name.equals("") && !authorname.equals("") && !publisher.equals("") && !edition.equals("") && !isbn.equals("") && !category.equals("Select")){
+            if(!drivelink.equals("") && !language.equals("Select")  && !branch.equals("Select") && !refno.equals("") && !currdate.equals("") && !pubdate.equals("") && !name.equals("") && !authorname.equals("") && !publisher.equals("") && !edition.equals("") && !isbn.equals("") && !category.equals("Select")){
                 Conn conn=null;
                 try{
                     conn=new Conn();
                     String query="Insert into bookdetails value('"+refno+"','"+name+"','"+authorname+"','"+publisher+"','"+edition+"','"+isbn+"','"+category+"','"+language+"','"+branch+"','"+currdate+"','"+pubdate+"','Available','Null')";
                     conn.s.executeUpdate(query);
+                    conn.s.executeUpdate("Insert into BookPdf value('"+refno+"', '"+drivelink+"')");
                     JOptionPane.showMessageDialog(null,"Book Details Successfully Added","",JOptionPane.INFORMATION_MESSAGE);
                     setVisible(false);
                 }catch(Exception e){

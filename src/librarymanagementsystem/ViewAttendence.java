@@ -35,9 +35,9 @@ public class ViewAttendence extends JFrame implements ActionListener {
             conn=new Conn();
             String query="";
             if(Login.databaseName.equals("student")){
-                 query="Select Reference_No, Name, Entry_Time, Exit_Time, Contact, Reason, Year, Seat_No, Date from Attendence Where Name='"+Login.userName+"'";
+                 query="Select Reference_No, Name, Entry_Time, Exit_Time, Contact, Reason, Year, Seat_No, Date from Attendence Where Name='"+Login.userName+"' and Reference_No='"+Login.userid+"'";
             }else{
-                 query="Select Reference_No, Name, Entry_Time, Exit_Time, Contact, Reason, Seat_No, Date from Attendence Where Name='"+Login.userName+"'";
+                 query="Select Reference_No, Name, Entry_Time, Exit_Time, Contact, Reason, Seat_No, Date from Attendence Where Name='"+Login.userName+"' and Reference_No='"+Login.userid+"'";
 
             }
             ResultSet rs=conn.s.executeQuery(query);

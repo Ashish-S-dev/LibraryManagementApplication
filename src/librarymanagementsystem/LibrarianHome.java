@@ -54,7 +54,7 @@ public class LibrarianHome extends JFrame implements ActionListener{
         JMenuItem byTitle=new JMenuItem("Search By Title");
         byTitle.setBackground(Color.getHSBColor(0, 0f, 0.97f));
         byTitle.setForeground(Color.getHSBColor(0, 0, 0.2f));
-        byTitle.setFont(new Font("Tahoma",Font.BOLD,16));
+        byTitle.setFont(new Font("Sarif",Font.BOLD,16));
         byTitle.addActionListener(this);
         search.add(byTitle);
         

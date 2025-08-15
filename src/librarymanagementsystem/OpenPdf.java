@@ -1,35 +1,41 @@
 
 package librarymanagementsystem;
 
+import java.awt.Desktop;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.*;
 import java.awt.*;
 import java.sql.*;
-import java.awt.event.*;
-public class DeleteBook extends JFrame implements ActionListener{
-    
+public class OpenPdf extends JFrame implements ActionListener{
     JLabel tfbookname,tfauthorname,tfpublisher,tfedition,tfisbn,tflanguage,pubyear,tfcurrdate,tfcategory,tfbranch;
     
     Choice jcrefno;
    
-    JButton jbcancel,jbsubmit,fetchDetails;
+    JButton jbcancel,jbopen,fetchDetails;
     
-    public DeleteBook(){
+    public OpenPdf(){
         setLayout(null);
         getContentPane().setBackground(Color.getHSBColor(0, 0f, 0.97f));
         
 //        Heading of the Page
 
-        JLabel heading=new JLabel("Remove Book");
+        JLabel heading=new JLabel("Read Book");
         heading.setFont(new Font("Algerian",Font.BOLD,36));
         heading.setForeground(Color.getHSBColor(0.58f, 1.0f, 0.35f));
-        heading.setBounds(410,30,280,40);
+        heading.setBounds(425,30,250,40);
         add(heading);
         
-        ImageIcon i1=new ImageIcon(ClassLoader.getSystemResource("librarymanagementsystem/icons/delete.png"));
-        Image i2=i1.getImage().getScaledInstance(300, 300, Image.SCALE_DEFAULT);
+        ImageIcon i1=new ImageIcon(ClassLoader.getSystemResource("librarymanagementsystem/icons/openBook.png"));
+        Image i2=i1.getImage().getScaledInstance(400, 300, Image.SCALE_DEFAULT);
         ImageIcon i3=new ImageIcon(i2);
         JLabel i4=new JLabel(i3);
-        i4.setBounds(600,115,500,400);
+        i4.setBounds(570,80,500,400);
         add(i4);
         
         JLabel lblref=new JLabel("Book Reference Number");
@@ -217,23 +223,15 @@ public class DeleteBook extends JFrame implements ActionListener{
         tfcurrdate.setForeground(Color.DARK_GRAY);
         add(tfcurrdate);
        
+      
         
-        
-        jbcancel=new JButton("Cancel");
-        jbcancel.setBounds(650,500,120,40);
-        jbcancel.setFont(new Font("Tahoma",Font.BOLD,18));
-        jbcancel.setForeground(Color.getHSBColor(0, 0, 0.2f));
-        jbcancel.setBackground(Color.getHSBColor(0f, 0.80f, 0.85f));
-        jbcancel.addActionListener(this);
-        add(jbcancel);
-        
-        jbsubmit=new JButton("Remove");
-        jbsubmit.setBounds(900,500,120,40);
-        jbsubmit.setFont(new Font("Tahoma",Font.BOLD,18));
-        jbsubmit.setForeground(Color.getHSBColor(0, 0, 0.2f));
-        jbsubmit.setBackground(Color.getHSBColor(0.33f, 0.80f, 0.65f));
-        jbsubmit.addActionListener(this);
-        add(jbsubmit);
+        jbopen=new JButton("Open Book");
+        jbopen.setBounds(700,490,240,40);
+        jbopen.setFont(new Font("Tahoma",Font.BOLD,18));
+        jbopen.setForeground(Color.getHSBColor(0, 0, 0.2f));
+        jbopen.setBackground(Color.getHSBColor(0.33f, 0.80f, 0.65f));
+        jbopen.addActionListener(this);
+        add(jbopen);
         
         
         setSize(1100,600);
@@ -243,36 +241,38 @@ public class DeleteBook extends JFrame implements ActionListener{
     public void actionPerformed(ActionEvent ae){
 
 
-        if(ae.getSource()==jbsubmit){
-            String msg=jcrefno.getSelectedItem();
-            if(!tfbookname.getText().equals("")){
-                Conn conn=null;
-                try{
-                    conn =new Conn();
-                    conn.s.executeUpdate("Delete From bookdetails where Reference_No='"+msg+"'");
-                    conn.s.executeUpdate("Delete From BookPdf where Reference_No='"+msg+"'");
-                    JOptionPane.showMessageDialog(null,"Book Data Successfully Removed","",JOptionPane.ERROR_MESSAGE);
-                    setVisible(false);
-                }catch(Exception e){
-                    e.printStackTrace();
+        if(ae.getSource()==jbopen){
+            String referenceno= jcrefno.getSelectedItem();
+            Conn conn=null;
+            try {
+                String driveLink=null;
+                conn = new Conn();
+                ResultSet rs2=conn.s.executeQuery( "Select pdflink from BookPdf where Reference_No ='"+referenceno+"' ");
+                
+                if(rs2.next()){
+                    // Google Drive ka share link
+                    driveLink=rs2.getString("pdflink");
+                    if (Desktop.isDesktopSupported()) {
+                        Desktop.getDesktop().browse(new URI(driveLink));
+                    }else{
+                        JOptionPane.showMessageDialog( null ,"Not Supported ! Update Your Browser" , "", JOptionPane.CANCEL_OPTION);
+                    }
+                }else{
+                    JOptionPane.showMessageDialog( null ,"Book Content Not be Found, It may be deleted ?" , "", JOptionPane.CANCEL_OPTION);
                 }
                 
-                finally{
-                    if(conn.c!=null){
-                        try{
-                            conn.c.close();
-                        }catch(Exception e){
-                            e.printStackTrace();
-                        }
-                        System.out.println("Connection Closed");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }finally{
+                if( conn.c!=null){
+                    try{
+                        conn.c.close();
+                    }catch(Exception e){
+                        e.printStackTrace();
                     }
                 }
-                
-            }else{
-                JOptionPane.showMessageDialog(null,"Null Value Not Accepted" ,"",JOptionPane.ERROR_MESSAGE);
             }
-        }else if(ae.getSource()==jbcancel){
-            setVisible(false);
+            
         }else if(ae.getSource()==fetchDetails){
             String msg=jcrefno.getSelectedItem();
             Conn conn=null;
@@ -311,7 +311,43 @@ public class DeleteBook extends JFrame implements ActionListener{
         }
     }
     public static void main(String args[]){
-        new DeleteBook();
+        new OpenPdf();
     }
 }
-
+//    public OpenPdf(){
+//        setLayout(null);
+//        setVisible(true);
+//        setSize(500, 500);
+//        setLocation(200,200);
+//    }
+//    
+//    public static void main(String[] args) {
+//        new OpenPdf();
+////        JFrame frame = new JFrame("Open PDF from Drive");
+////        JButton button = new JButton("Open PDF from Drive");
+////
+////        button.addActionListener(new ActionListener() {
+////            @Override
+////            public void actionPerformed(ActionEvent e) {
+////                try {
+////                    // Google Drive ka share link
+////                    String driveLink = "https://docs.google.com/document/d/12TydyucDjO-rOwvLza7SswbZUU_x9Wu8Z-pHpQwaHIQ/edit?usp=drive_link";
+////                    
+////                    if (Desktop.isDesktopSupported()) {
+////                        Desktop.getDesktop().browse(new URI(driveLink));
+////                    }
+////                } catch (IOException | URISyntaxException ex) {
+////                    ex.printStackTrace();
+////                }
+////            }
+////        });
+////
+////        frame.add(button);
+////        frame.setSize(300, 200);
+////        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+////        frame.setVisible(true);
+//    }
+//    public void actionPerformed(ActionEvent ae){
+//        
+//    }
+//}

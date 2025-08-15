@@ -208,7 +208,7 @@ public class StudentHome extends JFrame implements ActionListener{
         btn2.addActionListener(this);
         add(btn2);
         
-        btn3=new JButton("Your Details");
+        btn3=new JButton("Read Book");
         btn3.setPreferredSize(new Dimension(250,100));//Dimension of the bUtton
         btn3.setForeground(Color.getHSBColor(0, 0, 0.2f));
         btn3.setBackground(Color.getHSBColor(0.58f,0.10f,0.92f));
@@ -275,7 +275,7 @@ public class StudentHome extends JFrame implements ActionListener{
         }else if(ae.getSource()==btn2){
             new IssuedBook();
         }else if(ae.getSource()==btn3){
-            new ViewStudentProfile();
+            new OpenPdf();
         }
     }
     public static void main(String args[]){
